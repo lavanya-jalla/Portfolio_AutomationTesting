@@ -53,7 +53,6 @@ test.describe('Portfolio Website Tests', () => {
     const newPagePromise = context.waitForEvent('page');
     await resumeBtn.click();
     const newPage = await newPagePromise;
-    await newPage.waitForLoadState();
     await expect(newPage).toHaveURL("https://lavanyajallaportfolio.netlify.app/certificates/LavanyaJalla_Resume.pdf");
 
   });
@@ -87,7 +86,7 @@ test.describe('Portfolio Website Tests', () => {
       const newPagePromise = context.waitForEvent('page');
       await projects.first().click();
       const newPage = await newPagePromise;
-      await newPage.waitForLoadState();
+
     }
   });
   test('Profile image is visible', async ({ page }) => {
@@ -163,7 +162,6 @@ test.describe('Portfolio Website Tests', () => {
     const newPagePromise = context.waitForEvent('page');
     await certicatesBtn.first().click();
     const newPage = await newPagePromise;
-    await newPage.waitForLoadState();
     await expect(newPage).toHaveURL("https://lavanyajallaportfolio.netlify.app/certificates/Jalla_Lavanya_Certificate.pdf")
   });
   test('Verify Conatct Form', async ({ page }) => {
