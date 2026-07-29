@@ -26,7 +26,7 @@ test.describe('Portfolio Website Tests', () => {
 
   test('Verify Skills section', async ({ page }) => {
     await page.locator('#skills').scrollIntoViewIfNeeded();
-    await expect(page.locator('#skills')).toContainText('Languages', 'Database', 'Tools');
+    await expect(page.locator('#skills')).toContainText('Languages', 'Database',  'Testing & Tools');
   });
   test('Verify Projects section', async ({ page }) => {
     await page.locator('#projects').scrollIntoViewIfNeeded();
@@ -44,18 +44,18 @@ test.describe('Portfolio Website Tests', () => {
     await page.locator('#contact').scrollIntoViewIfNeeded();
     await expect(page.locator('#contact')).toBeVisible();
   });
+test('Verify Resume button', async ({ page, context }) => {
+  const resumeLink = page.getByRole('link', { name: 'View Resume' });
 
-  test('Verify Resume button', async ({ page, context }) => {
-    const resumeBtn = page.getByRole('button', { name: "View Resume" });
+  await expect(resumeLink).toBeVisible();
 
-    await expect(resumeBtn).toBeVisible();
+  const [newPage] = await Promise.all([
+    context.waitForEvent('page'),
+    resumeLink.click(),
+  ]);
 
-    const newPagePromise = context.waitForEvent('page');
-    await resumeBtn.click();
-    const newPage = await newPagePromise;
-    await expect(newPage).toHaveURL("https://lavanyajallaportfolio.netlify.app/certificates/LavanyaJalla_Resume.pdf");
-
-  });
+  await expect(newPage).toHaveURL("https://lavanyajallaportfolio.netlify.app/certificates/LavanyaJalla_Resume.pdf");
+});
 
   test('Verify GitHub link', async ({ page, context }) => {
     const github = page.getByRole('link', { name: 'GitHub', exact: true });
@@ -134,7 +134,7 @@ test.describe('Portfolio Website Tests', () => {
   test('Verify all images are loaded', async ({ page }) => {
     const images = page.locator('img');
     const count = await images.count();
-    for (let i = 1; i < count; i++) {
+    for (let i = 0; i < count; i++) {
       await expect(images.nth(i)).toBeVisible();
     }
     console.log(`The Number of Images are ${count}`);
@@ -145,25 +145,29 @@ test.describe('Portfolio Website Tests', () => {
     await expect(page.locator('footer')).toBeVisible();
   });
 
-  test('Verify view cerificates button to be visible and clickable', async ({ page, context }) => {
-
-    const certicatesBtn = page.getByRole('button', { name: 'View Certificate', exact: true });
-
-    const count = await certicatesBtn.count();
-    for (let i = 0; i < count; i++) {
-      await expect(certicatesBtn.nth(i)).toBeVisible();
-    }
-    console.log(`The Number of View Ceritificate Buttons  are ${count}`);
-
-    if (await certicatesBtn.count()) {
-      await certicatesBtn.first().click();
-
-    }
-    const newPagePromise = context.waitForEvent('page');
-    await certicatesBtn.first().click();
-    const newPage = await newPagePromise;
-    await expect(newPage).toHaveURL("https://lavanyajallaportfolio.netlify.app/certificates/Jalla_Lavanya_Certificate.pdf")
+ test('Verify view certificates button is visible and clickable', async ({ page, context }) => {
+  const certificateBtn = page.getByRole('button', {
+    name: 'View Certificate',
+    exact: true,
   });
+
+  const count = await certificateBtn.count();
+
+  expect(count).toBeGreaterThan(0);
+
+  for (let i = 0; i < count; i++) {
+    await expect(certificateBtn.nth(i)).toBeVisible();
+  }
+
+  console.log(`The Number of View Certificate Buttons are ${count}`);
+
+  const [newPage] = await Promise.all([
+    context.waitForEvent('page'),
+    certificateBtn.first().click(),
+  ]);
+
+  await expect(newPage).toHaveURL("https://lavanyajallaportfolio.netlify.app/certificates/Jalla_Lavanya_Certificate.pdf");
+});
   test('Verify Conatct Form', async ({ page }) => {
     await page.getByPlaceholder("Name").fill("Kushala");
     await page.getByPlaceholder("Email").fill("lavanyajalla22@gmail.com")
