@@ -44,17 +44,11 @@ test.describe('Portfolio Website Tests', () => {
     await page.locator('#contact').scrollIntoViewIfNeeded();
     await expect(page.locator('#contact')).toBeVisible();
   });
-test('Verify Resume button', async ({ page, context }) => {
+test('Verify Resume link', async ({ page }) => {
   const resumeLink = page.getByRole('link', { name: 'View Resume' });
 
   await expect(resumeLink).toBeVisible();
-
-  const [newPage] = await Promise.all([
-    context.waitForEvent('page'),
-    resumeLink.click(),
-  ]);
-
-  await expect(newPage).toHaveURL("https://lavanyajallaportfolio.netlify.app/certificates/LavanyaJalla_Resume.pdf");
+  await expect(resumeLink).toHaveAttribute('href','certificates/LavanyaJalla_Resume.pdf');
 });
 
   test('Verify GitHub link', async ({ page, context }) => {
@@ -145,28 +139,21 @@ test('Verify Resume button', async ({ page, context }) => {
     await expect(page.locator('footer')).toBeVisible();
   });
 
- test('Verify view certificates button is visible and clickable', async ({ page, context }) => {
-  const certificateBtn = page.getByRole('button', {
-    name: 'View Certificate',
-    exact: true,
-  });
 
-  const count = await certificateBtn.count();
+
+test('Verify Certificate link', async ({ page }) => {
+  const certificateLink = page.getByRole('link', { name: 'View Certificate' }).first();
+
+  await expect(certificateLink).toBeVisible();
+  await expect(certificateLink).toHaveAttribute( 'href','certificates/Jalla_Lavanya_Certificate.pdf' );
+  
+  const count = await certificateLink.count();
 
   expect(count).toBeGreaterThan(0);
 
   for (let i = 0; i < count; i++) {
-    await expect(certificateBtn.nth(i)).toBeVisible();
+    await expect(certificateLink.nth(i)).toBeVisible();
   }
-
-  console.log(`The Number of View Certificate Buttons are ${count}`);
-
-  const [newPage] = await Promise.all([
-    context.waitForEvent('page'),
-    certificateBtn.first().click(),
-  ]);
-
-  await expect(newPage).toHaveURL("https://lavanyajallaportfolio.netlify.app/certificates/Jalla_Lavanya_Certificate.pdf");
 });
   test('Verify Conatct Form', async ({ page }) => {
     await page.getByPlaceholder("Name").fill("Kushala");
